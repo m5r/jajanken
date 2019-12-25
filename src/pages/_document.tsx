@@ -13,7 +13,7 @@ class NextDocument extends Document {
 
 	render() {
 		return (
-			<Html lang="en">
+			<Html lang="en" className="app-layout">
 				<Head>
 					<meta charSet="UTF-8" />
 					<meta name="description" content={defaultDescription} />
@@ -32,7 +32,7 @@ class NextDocument extends Document {
 					<meta property="og:image:width" content="1200" />
 					<meta property="og:image:height" content="630" />
 				</Head>
-				<body>
+				<body className="app-layout">
 				<Main />
 				<NextScript />
 				</body>

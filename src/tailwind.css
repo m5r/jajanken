@@ -3,3 +3,11 @@
 /* purgecss end ignore */
 @tailwind components;
 @tailwind utilities;
+
+.app-layout {
+    @apply .h-full .w-full .overflow-hidden .fixed;
+}
+
+#__next {
+    @apply .app-layout;
+}
