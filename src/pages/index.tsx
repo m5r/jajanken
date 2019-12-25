@@ -1,6 +1,8 @@
 import { NextPage } from "next";
 import { useReducer, Reducer } from "react";
 
+import Header from "../components/header";
+
 import { useMLP } from "../MLP/hook";
 
 type State = {
@@ -39,11 +41,7 @@ const Index: NextPage = () => {
 
 	return (
 		<section className="h-full w-full flex flex-col justify-between items-center">
-			<header className="flex flex-row w-full justify-between">
-				<div>{state.score.wins} Wins</div>
-				<div>{state.score.ties} Ties</div>
-				<div>{state.score.losses} Losses</div>
-			</header>
+			<Header score={state.score} />
 
 			<main className="w-full flex flex-col items-center">
 				<div>Rock x Rock</div>
