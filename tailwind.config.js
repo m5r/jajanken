@@ -1,5 +1,11 @@
 module.exports = {
-	theme: {},
+	theme: {
+		extend: {
+			fontFamily: {
+				pixel: ["Munro Small"],
+			},
+		},
+	},
 	variants: {},
 	plugins: [],
-}
+};

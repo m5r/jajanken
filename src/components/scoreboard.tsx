@@ -9,17 +9,17 @@ type Props = {
 };
 
 const Score: FunctionComponent<{ title: string; value: number; }> = ({ title, value }) => (
-	<div className="flex flex-col items-center">
+	<div className="flex flex-col items-center w-1/3">
 		<div>{title}</div>
 		<div>{value}</div>
 	</div>
 );
 
 const Scoreboard: FunctionComponent<Props> = ({ score }) => (
-	<header className="flex flex-row w-full justify-around">
-		<Score title="Wins" value={score.wins} />
-		<Score title="Ties" value={score.ties} />
-		<Score title="Losses" value={score.losses} />
+	<header className="h-32 lg:h-48 flex flex-row w-full text-3xl lg:text-4xl font-pixel">
+		<Score title="WINS" value={score.wins} />
+		<Score title="TIES" value={score.ties} />
+		<Score title="LOSSES" value={score.losses} />
 	</header>
 );
 

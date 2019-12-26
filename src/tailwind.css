@@ -1,8 +1,17 @@
 /* purgecss start ignore */
 @tailwind base;
 /* purgecss end ignore */
-@tailwind components;
-@tailwind utilities;
+
+@font-face {
+    font-display: swap;
+    font-family: "Munro Small";
+    font-stretch: normal;
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/munro-small.woff2") format("woff2"),
+    url("/static/fonts/munro-small.woff") format("woff");
+    unicode-range: U+20, U+30-39, U+45, U+49, U+4c, U+4e-4f, U+53-54, U+57
+}
 
 .app-layout {
     @apply .h-full .w-full .overflow-hidden .fixed;
@@ -15,7 +24,7 @@
 #__next {
     @apply .app-layout .bg-repeat-x .bg-cover;
 
-    background-image: url("/static/bg.png");
+    background-image: url("/static/images/bg.png");
 }
 
 @screen lg {
@@ -23,3 +32,6 @@
         @apply .bg-contain;
     }
 }
+
+@tailwind components;
+@tailwind utilities;
