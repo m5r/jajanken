@@ -8,6 +8,18 @@
     @apply .h-full .w-full .overflow-hidden .fixed;
 }
 
+.footer-height {
+    height: 64px;
+}
+
 #__next {
-    @apply .app-layout;
+    @apply .app-layout .bg-repeat-x .bg-cover;
+
+    background-image: url("/static/bg.png");
+}
+
+@screen lg {
+    #__next {
+        @apply .bg-contain;
+    }
 }

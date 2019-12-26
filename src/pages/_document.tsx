@@ -32,7 +32,7 @@ class NextDocument extends Document {
 					<meta property="og:image:width" content="1200" />
 					<meta property="og:image:height" content="630" />
 				</Head>
-				<body className="app-layout">
+				<body className="app-layout text-white">
 				<Main />
 				<NextScript />
 				</body>
