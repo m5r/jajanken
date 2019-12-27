@@ -45,7 +45,6 @@ module.exports = withOffline(withCSS(withPreact({
 			plugins: config.plugins,
 		};
 	},
-	target: "serverless",
 	transformManifest: manifest => ["/"].concat(manifest), // add the homepage to the cache
 	workboxOpts: {
 		swDest: "static/service-worker.js",
