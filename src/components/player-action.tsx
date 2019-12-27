@@ -6,9 +6,11 @@ type Props = {
 }
 
 const PlayerAction: FunctionComponent<Props> = ({ onClick, action }) => (
-	<button onClick={onClick} className="flex justify-center cursor-pointer jjk-player-action">
-		<img className="max-h-full" src={`/static/images/${action}.png`} />
-	</button>
+	<img
+		className="flex max-h-full w-auto justify-around cursor-pointer jjk-player-action"
+		src={`/static/images/${action}.png`}
+		onClick={onClick}
+	/>
 );
 
 export default PlayerAction;

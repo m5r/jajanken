@@ -24,101 +24,94 @@ const initialState: State = {
 	},
 };
 
-let playFromCPU: Play = "ROCK";
+let computerPlay: Play = "ROCK";
+
+function getResult(player: Play, computer: Play): "WIN" | "LOSS" | "TIE" {
+	if (player === "ROCK") {
+		if (computer === "ROCK") {
+			return "TIE";
+		}
+
+		if (computer === "PAPER") {
+			return "LOSS";
+		}
+
+		if (computer === "SCISSORS") {
+			return "WIN";
+		}
+	}
+
+	if (player === "PAPER") {
+		if (computer === "ROCK") {
+			return "WIN";
+		}
+
+		if (computer === "PAPER") {
+			return "TIE";
+		}
+
+		if (computer === "SCISSORS") {
+			return "LOSS";
+		}
+	}
+
+	if (player === "SCISSORS") {
+		if (computer === "ROCK") {
+			return "LOSS";
+		}
+
+		if (computer === "PAPER") {
+			return "WIN";
+		}
+
+		if (computer === "SCISSORS") {
+			return "TIE";
+		}
+	}
+
+	throw new Error("Unreachable code");
+}
 
 const reducer: Reducer<State, Action> = (prevState, action) => {
-	// assign playFromCPU
+	const playerPlay: Play = action.slice("PLAYER_PLAY_".length) as Play;
+	const result = getResult(playerPlay, computerPlay);
 
-	switch (action) {
-		case "PLAYER_PLAY_ROCK":
-			switch (playFromCPU) {
-				case "PAPER":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							losses: prevState.score.losses + 1,
-						},
-					};
-				case "ROCK":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							ties: prevState.score.ties + 1,
-						},
-					};
-				case "SCISSORS":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							wins: prevState.score.wins + 1,
-						},
-					};
-				default:
-					throw new Error("Unreachable code");
-			}
-		case "PLAYER_PLAY_PAPER":
-			switch (playFromCPU) {
-				case "SCISSORS":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							losses: prevState.score.losses + 1,
-						},
-					};
-				case "PAPER":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							ties: prevState.score.ties + 1,
-						},
-					};
-				case "ROCK":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							wins: prevState.score.wins + 1,
-						},
-					};
-				default:
-					throw new Error("Unreachable code");
-			}
-		case "PLAYER_PLAY_SCISSORS":
-			switch (playFromCPU) {
-				case "ROCK":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							losses: prevState.score.losses + 1,
-						},
-					};
-				case "SCISSORS":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							ties: prevState.score.ties + 1,
-						},
-					};
-				case "PAPER":
-					return {
-						...prevState,
-						score: {
-							...prevState.score,
-							wins: prevState.score.wins + 1,
-						},
-					};
-				default:
-					throw new Error("Unreachable code");
-			}
+	switch (result) {
+		case "WIN": {
+			const nextState: State = {
+				...prevState,
+				score: {
+					...prevState.score,
+					wins: prevState.score.wins + 1,
+				},
+			};
+
+			return nextState;
+		}
+		case "LOSS": {
+			const nextState: State = {
+				...prevState,
+				score: {
+					...prevState.score,
+					losses: prevState.score.losses + 1,
+				},
+			};
+
+			return nextState;
+		}
+		case "TIE": {
+			const nextState: State = {
+				...prevState,
+				score: {
+					...prevState.score,
+					ties: prevState.score.ties + 1,
+				},
+			};
+
+			return nextState;
+		}
 		default:
-			throw new Error("Unhandled event");
+			throw new Error("Unreachable code");
 	}
 };
 
