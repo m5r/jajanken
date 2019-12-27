@@ -1,8 +1,8 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from "next/document";
 
-export const pageTitle = "Preact Next Tailwind Starter";
-const defaultDescription = "Default description";
-const defaultOGURL = "https://github.com/m5r/preact-next-tailwind-starter";
+export const pageTitle = "Jajanken";
+const defaultDescription = "Multilayer perceptron vs humanity (at rock paper scissors)";
+const defaultOGURL = "https://www.jajanken.app/";
 const defaultOGImage = "";
 
 class NextDocument extends Document {
@@ -12,12 +12,12 @@ class NextDocument extends Document {
 	}
 
 	render() {
-		// try {
-		// 	const FontFace = (window as any).FontFace;
-		// 	new FontFace("Munro Small", "url('/static/fonts/munro-small.woff2') format('woff2')", {}).load();
-		// } catch {
-		//
-		// }
+		try {
+			const FontFace = (window as any).FontFace;
+			new FontFace("Munro Small", "url('/static/fonts/munro-small.woff2') format('woff2')", {}).load();
+		} catch {
+
+		}
 
 		return (
 			<Html lang="en" className="jjk-app-layout">
@@ -45,7 +45,6 @@ class NextDocument extends Document {
 						crossOrigin="anonymous"
 						href="/static/fonts/munro-small.woff2"
 					/>
-					<link rel="stylesheet" href="/subfont/fonts-5e633312b3.css" />
 
 					<meta property="og:url" content={defaultOGURL} />
 					<meta property="og:title" content={pageTitle} />
