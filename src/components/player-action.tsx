@@ -10,6 +10,7 @@ const PlayerAction: FunctionComponent<Props> = ({ onClick, action }) => (
 		className="flex max-h-full w-auto justify-around cursor-pointer jjk-player-action"
 		src={`/static/images/${action}.png`}
 		onClick={onClick}
+		alt={action}
 	/>
 );
 
