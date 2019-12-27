@@ -1,14 +1,14 @@
 import { FunctionComponent } from "react";
-import { Play, Result } from "../shared-types";
+import { Move, Result } from "../shared-types";
 
 type Props = {
-	lastPlayerPlay: Play | null;
-	lastComputerPlay: Play | null;
+	lastPlayerMove: Move | null;
+	lastComputerMove: Move | null;
 	lastResult: Result | null;
 };
 
-const MainSection: FunctionComponent<Props> = ({ lastPlayerPlay, lastComputerPlay, lastResult }) => {
-	if (lastPlayerPlay === null || lastComputerPlay === null || lastResult === null) {
+const MainSection: FunctionComponent<Props> = ({ lastPlayerMove, lastComputerMove, lastResult }) => {
+	if (lastPlayerMove === null || lastComputerMove === null || lastResult === null) {
 		return (
 			<main className="w-full flex flex-col text-center font-mono text-2xl">
 				<div className="m-auto">Use the three buttons below to play</div>
@@ -32,7 +32,7 @@ const MainSection: FunctionComponent<Props> = ({ lastPlayerPlay, lastComputerPla
 
 	return (
 		<main className="w-full flex flex-col text-center font-mono text-2xl">
-			<div className="m-auto">{lastPlayerPlay} x {lastComputerPlay}</div>
+			<div className="m-auto">{lastPlayerMove} x {lastComputerMove}</div>
 			<div className="m-auto">{resultText}</div>
 		</main>
 	);

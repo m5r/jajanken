@@ -5,7 +5,7 @@ import Scoreboard from "../components/scoreboard";
 import PlayerAction from "../components/player-action";
 import MainSection from "../components/main-section";
 
-import { Play, Result } from "../shared-types";
+import { Move, Result } from "../shared-types";
 import { useMLP } from "../mlp/hook";
 
 type State = {
@@ -14,8 +14,8 @@ type State = {
 		ties: number;
 		losses: number;
 	};
-	lastPlayerPlay: Play | null;
-	lastComputerPlay: Play | null;
+	lastPlayerMove: Move | null;
+	lastComputerMove: Move | null;
 	lastResult: Result | null;
 };
 
@@ -27,12 +27,12 @@ const initialState: State = {
 		ties: 0,
 		losses: 0,
 	},
-	lastPlayerPlay: null,
-	lastComputerPlay: null,
+	lastPlayerMove: null,
+	lastComputerMove: null,
 	lastResult: null,
 };
 
-function getResult(player: Play, computer: Play): Result {
+function getResult(player: Move, computer: Move): Result {
 	if (player === "ROCK") {
 		if (computer === "ROCK") {
 			return "TIE";
@@ -81,13 +81,13 @@ function getResult(player: Play, computer: Play): Result {
 const reducer: Reducer<State, Action> = (prevState, action) => {
 	const { predict } = useMLP();
 
-	const computerPlay = predict();
-	const playerPlay: Play = action.slice("PLAYER_PLAY_".length) as Play;
-	const result = getResult(playerPlay, computerPlay);
+	const computerMove = predict();
+	const playerMove: Move = action.slice("PLAYER_PLAY_".length) as Move;
+	const result = getResult(playerMove, computerMove);
 	let nextState: State = {
 		...prevState,
-		lastPlayerPlay: playerPlay,
-		lastComputerPlay: computerPlay,
+		lastPlayerMove: playerMove,
+		lastComputerMove: computerMove,
 		lastResult: result,
 	};
 
@@ -138,8 +138,8 @@ const Index: NextPage = () => {
 			<Scoreboard score={state.score} />
 
 			<MainSection
-				lastPlayerPlay={state.lastPlayerPlay}
-				lastComputerPlay={state.lastComputerPlay}
+				lastPlayerMove={state.lastPlayerMove}
+				lastComputerMove={state.lastComputerMove}
 				lastResult={state.lastResult}
 			/>
 
