@@ -1,5 +1,5 @@
 export default class Matrix {
-	private readonly data: number[];
+	public readonly data: number[];
 
 	constructor(
 		private rows: number = 0,

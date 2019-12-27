@@ -99,7 +99,7 @@ export default class MLP {
 		}
 	}
 
-	public shuffle(x: number[], y: number[]): void {
+	public shuffle(x: number[][], y: number[][]): void {
 		for (let i = 0; i < y.length; i++) {
 			const pos = Math.floor(Math.random() * y.length);
 
