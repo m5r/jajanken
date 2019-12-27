@@ -79,10 +79,11 @@ function getResult(player: Move, computer: Move): Result {
 }
 
 const reducer: Reducer<State, Action> = (prevState, action) => {
-	const { predict } = useMLP();
+	const { lastPlayerMove, lastResult } = prevState;
+	const predict = useMLP();
 
-	const computerMove = predict();
 	const playerMove: Move = action.slice("PLAYER_PLAY_".length) as Move;
+	const computerMove = predict({ playerMove, lastPlayerMove, lastResult });
 	const result = getResult(playerMove, computerMove);
 	let nextState: State = {
 		...prevState,
