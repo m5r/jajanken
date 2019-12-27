@@ -1,6 +1,5 @@
 /* purgecss start ignore */
 @tailwind base;
-/* purgecss end ignore */
 
 @font-face {
     font-display: swap;
@@ -37,6 +36,7 @@
 .jjk-player-action:hover {
     transform: translateY(0);
 }
+/* purgecss end ignore */
 
 @tailwind components;
 @tailwind utilities;
