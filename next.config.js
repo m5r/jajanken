@@ -1,3 +1,4 @@
+const withOffline = require("next-offline");
 const withCSS = require("@zeit/next-css");
 const BundleAnalyzerPlugin = require("@bundle-analyzer/webpack-plugin");
 require("dotenv").config();
@@ -31,11 +32,11 @@ function withPreact(nextConfig = {}) {
 	});
 }
 
-module.exports = withCSS(withPreact({
+module.exports = withOffline(withCSS(withPreact({
 	webpack(config) {
 		if (process.env.BUNDLE_ANALYZER_TOKEN) {
 			config.plugins.push(
-				new BundleAnalyzerPlugin({ token: process.env.BUNDLE_ANALYZER_TOKEN }),
+				new BundleAnalyzerPlugin({token: process.env.BUNDLE_ANALYZER_TOKEN}),
 			);
 		}
 
@@ -44,4 +45,9 @@ module.exports = withCSS(withPreact({
 			plugins: config.plugins,
 		};
 	},
-}));
+	target: "serverless",
+	transformManifest: manifest => ["/"].concat(manifest), // add the homepage to the cache
+	workboxOpts: {
+		swDest: "static/service-worker.js",
+	},
+})));
