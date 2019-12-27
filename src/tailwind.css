@@ -19,7 +19,7 @@
 #__next {
     @apply .jjk-app-layout .bg-repeat-x .bg-cover;
 
-    background-image: url("/static/images/bg.png");
+    background-image: url("/static/images/bg.webp");
 }
 
 @screen lg {
