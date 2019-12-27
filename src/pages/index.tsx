@@ -6,6 +6,7 @@ import PlayerAction from "../components/player-action";
 import MainSection from "../components/main-section";
 
 import { Play, Result } from "../shared-types";
+import { useMLP } from "../mlp/hook";
 
 type State = {
 	score: {
@@ -30,8 +31,6 @@ const initialState: State = {
 	lastComputerPlay: null,
 	lastResult: null,
 };
-
-let computerPlay: Play = "ROCK";
 
 function getResult(player: Play, computer: Play): Result {
 	if (player === "ROCK") {
@@ -80,6 +79,9 @@ function getResult(player: Play, computer: Play): Result {
 }
 
 const reducer: Reducer<State, Action> = (prevState, action) => {
+	const { predict } = useMLP();
+
+	const computerPlay = predict();
 	const playerPlay: Play = action.slice("PLAYER_PLAY_".length) as Play;
 	const result = getResult(playerPlay, computerPlay);
 	let nextState: State = {
