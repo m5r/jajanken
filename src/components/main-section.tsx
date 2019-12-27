@@ -20,10 +20,10 @@ const MainSection: FunctionComponent<Props> = ({ lastPlayerMove, lastComputerMov
 	let resultText = "";
 	switch (lastResult) {
 		case "WIN":
-			resultText = "You win but don't let it get to your head";
+			resultText = "You win but don't let it get to your head.";
 			break;
 		case "LOSS":
-			resultText = "You lose, sasuga Jajanken-chan, sono toori da! \uD83E\uDDEA";
+			resultText = "You lose, 流石そのＡＩ！ \uD83E\uDDEA";
 			break;
 		case "TIE":
 			resultText = "It's a tie \uD83E\uDD37";
