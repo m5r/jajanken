@@ -19,7 +19,8 @@
 #__next {
     @apply .jjk-app-layout .bg-repeat-x .bg-cover;
 
-    background-image: url("/static/images/bg.webp");
+    background-color: #51096B;
+    background-image: url("/static/images/bg.png");
 }
 
 @screen lg {
