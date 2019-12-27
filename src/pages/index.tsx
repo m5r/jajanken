@@ -3,6 +3,9 @@ import { useReducer, Reducer } from "react";
 
 import Scoreboard from "../components/scoreboard";
 import PlayerAction from "../components/player-action";
+import MainSection from "../components/main-section";
+
+import { Play, Result } from "../shared-types";
 
 type State = {
 	score: {
@@ -10,9 +13,10 @@ type State = {
 		ties: number;
 		losses: number;
 	};
+	lastPlayerPlay: Play | null;
+	lastComputerPlay: Play | null;
+	lastResult: Result | null;
 };
-
-type Play = "ROCK" | "PAPER" | "SCISSORS";
 
 type Action = "PLAYER_PLAY_ROCK" | "PLAYER_PLAY_PAPER" | "PLAYER_PLAY_SCISSORS";
 
@@ -22,11 +26,14 @@ const initialState: State = {
 		ties: 0,
 		losses: 0,
 	},
+	lastPlayerPlay: null,
+	lastComputerPlay: null,
+	lastResult: null,
 };
 
 let computerPlay: Play = "ROCK";
 
-function getResult(player: Play, computer: Play): "WIN" | "LOSS" | "TIE" {
+function getResult(player: Play, computer: Play): Result {
 	if (player === "ROCK") {
 		if (computer === "ROCK") {
 			return "TIE";
@@ -75,36 +82,42 @@ function getResult(player: Play, computer: Play): "WIN" | "LOSS" | "TIE" {
 const reducer: Reducer<State, Action> = (prevState, action) => {
 	const playerPlay: Play = action.slice("PLAYER_PLAY_".length) as Play;
 	const result = getResult(playerPlay, computerPlay);
+	let nextState: State = {
+		...prevState,
+		lastPlayerPlay: playerPlay,
+		lastComputerPlay: computerPlay,
+		lastResult: result,
+	};
 
 	switch (result) {
 		case "WIN": {
-			const nextState: State = {
-				...prevState,
+			nextState = {
+				...nextState,
 				score: {
-					...prevState.score,
-					wins: prevState.score.wins + 1,
+					...nextState.score,
+					wins: nextState.score.wins + 1,
 				},
 			};
 
 			return nextState;
 		}
 		case "LOSS": {
-			const nextState: State = {
-				...prevState,
+			nextState = {
+				...nextState,
 				score: {
-					...prevState.score,
-					losses: prevState.score.losses + 1,
+					...nextState.score,
+					losses: nextState.score.losses + 1,
 				},
 			};
 
 			return nextState;
 		}
 		case "TIE": {
-			const nextState: State = {
-				...prevState,
+			nextState = {
+				...nextState,
 				score: {
-					...prevState.score,
-					ties: prevState.score.ties + 1,
+					...nextState.score,
+					ties: nextState.score.ties + 1,
 				},
 			};
 
@@ -122,10 +135,11 @@ const Index: NextPage = () => {
 		<section className="h-full w-full flex flex-col justify-between items-center">
 			<Scoreboard score={state.score} />
 
-			<main className="w-full flex flex-col text-center font-mono text-2xl">
-				<div className="m-auto">Use the three buttons below to play</div>
-				<div className="m-auto">Start playing and see how you do against this AI!</div>
-			</main>
+			<MainSection
+				lastPlayerPlay={state.lastPlayerPlay}
+				lastComputerPlay={state.lastComputerPlay}
+				lastResult={state.lastResult}
+			/>
 
 			<footer className="h-32 lg:h-48 w-full flex justify-around">
 				<PlayerAction onClick={() => dispatch("PLAYER_PLAY_ROCK")} action="rock" />
