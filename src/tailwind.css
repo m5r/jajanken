@@ -13,16 +13,12 @@
     unicode-range: U+20, U+30-39, U+45, U+49, U+4c, U+4e-4f, U+53-54, U+57
 }
 
-.app-layout {
+.jjk-app-layout {
     @apply .h-full .w-full .overflow-hidden .fixed;
 }
 
-.footer-height {
-    height: 64px;
-}
-
 #__next {
-    @apply .app-layout .bg-repeat-x .bg-cover;
+    @apply .jjk-app-layout .bg-repeat-x .bg-cover;
 
     background-image: url("/static/images/bg.png");
 }
@@ -31,6 +27,15 @@
     #__next {
         @apply .bg-contain;
     }
+}
+
+.jjk-player-action {
+    transform: translateY(16px);
+    transition: transform 150ms ease-in-out;
+}
+
+.jjk-player-action:hover {
+    transform: translateY(0);
 }
 
 @tailwind components;

@@ -12,26 +12,114 @@ type State = {
 	};
 };
 
+type Play = "ROCK" | "PAPER" | "SCISSORS";
+
 type Action = "PLAYER_PLAY_ROCK" | "PLAYER_PLAY_PAPER" | "PLAYER_PLAY_SCISSORS";
 
 const initialState: State = {
 	score: {
-		wins: 30164,
-		ties: 98261,
-		losses: 16578,
+		wins: 0,
+		ties: 0,
+		losses: 0,
 	},
 };
 
+let playFromCPU: Play = "ROCK";
+
 const reducer: Reducer<State, Action> = (prevState, action) => {
+	// assign playFromCPU
+
 	switch (action) {
 		case "PLAYER_PLAY_ROCK":
+			switch (playFromCPU) {
+				case "PAPER":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							losses: prevState.score.losses + 1,
+						},
+					};
+				case "ROCK":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							ties: prevState.score.ties + 1,
+						},
+					};
+				case "SCISSORS":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							wins: prevState.score.wins + 1,
+						},
+					};
+				default:
+					throw new Error("Unreachable code");
+			}
 		case "PLAYER_PLAY_PAPER":
+			switch (playFromCPU) {
+				case "SCISSORS":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							losses: prevState.score.losses + 1,
+						},
+					};
+				case "PAPER":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							ties: prevState.score.ties + 1,
+						},
+					};
+				case "ROCK":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							wins: prevState.score.wins + 1,
+						},
+					};
+				default:
+					throw new Error("Unreachable code");
+			}
 		case "PLAYER_PLAY_SCISSORS":
+			switch (playFromCPU) {
+				case "ROCK":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							losses: prevState.score.losses + 1,
+						},
+					};
+				case "SCISSORS":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							ties: prevState.score.ties + 1,
+						},
+					};
+				case "PAPER":
+					return {
+						...prevState,
+						score: {
+							...prevState.score,
+							wins: prevState.score.wins + 1,
+						},
+					};
+				default:
+					throw new Error("Unreachable code");
+			}
 		default:
-			return prevState;
+			throw new Error("Unhandled event");
 	}
-
-	return prevState;
 };
 
 const Index: NextPage = () => {
