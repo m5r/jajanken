@@ -40,6 +40,18 @@ module.exports = withOffline(withCSS(withPreact({
 			);
 		}
 
+		config.module.rules.push({
+			test: /\.b64$/i,
+			use: [
+				{
+					loader: 'raw-loader',
+					options: {
+						esModule: false,
+					},
+				},
+			],
+		});
+
 		return config;
 	},
 	transformManifest: manifest => ["/"].concat(manifest), // add the homepage to the cache
