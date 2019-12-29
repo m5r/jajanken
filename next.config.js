@@ -40,10 +40,7 @@ module.exports = withOffline(withCSS(withPreact({
 			);
 		}
 
-		return {
-			...config,
-			plugins: config.plugins,
-		};
+		return config;
 	},
 	transformManifest: manifest => ["/"].concat(manifest), // add the homepage to the cache
 	workboxOpts: {

@@ -135,7 +135,7 @@ const Index: NextPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	return (
-		<section className="h-full w-full flex flex-col justify-between items-center">
+		<section className="jjk-background h-full w-full flex flex-col justify-between items-center">
 			<Scoreboard score={state.score} />
 
 			<MainSection
@@ -145,9 +145,18 @@ const Index: NextPage = () => {
 			/>
 
 			<footer className="h-32 lg:h-48 w-full flex justify-around">
-				<PlayerAction onClick={() => dispatch("PLAYER_PLAY_ROCK")} action="rock" />
-				<PlayerAction onClick={() => dispatch("PLAYER_PLAY_PAPER")} action="paper" />
-				<PlayerAction onClick={() => dispatch("PLAYER_PLAY_SCISSORS")} action="scissors" />
+				<PlayerAction
+					onClick={() => dispatch("PLAYER_PLAY_ROCK")}
+					move="ROCK"
+				/>
+				<PlayerAction
+					onClick={() => dispatch("PLAYER_PLAY_PAPER")}
+					move="PAPER"
+				/>
+				<PlayerAction
+					onClick={() => dispatch("PLAYER_PLAY_SCISSORS")}
+					move="SCISSORS"
+				/>
 			</footer>
 		</section>
 	);
