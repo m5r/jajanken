@@ -19,6 +19,8 @@ class NextDocument extends Document {
 
 		}
 
+		const isProduction = process.env.NODE_ENV === "production";
+
 		return (
 			<Html lang="en" className="jjk-app-layout">
 				<Head>
@@ -123,6 +125,23 @@ webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 				<body className="jjk-app-layout text-white">
 				<Main />
 				<NextScript />
+				{
+					isProduction && (
+						<script dangerouslySetInnerHTML={{
+							__html: `(function(f, a, t, h, o, m){
+									a[h]=a[h]||function(){
+										(a[h].q=a[h].q||[]).push(arguments)
+									};
+									o=f.createElement('script'),
+									m=f.getElementsByTagName('script')[0];
+									o.async=1; o.src=t; o.id='fathom-script';
+									m.parentNode.insertBefore(o,m)
+								})(document, window, '//analytics.mokhtar.dev/tracker.js', 'fathom');
+								fathom('set', 'siteId', 'VSFVE');
+								fathom('trackPageview');`,
+						}} />
+					)
+				}
 				</body>
 			</Html>
 		);
