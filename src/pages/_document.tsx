@@ -121,6 +121,8 @@ webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 					<meta property="og:image" content={defaultOGImage} />
 					<meta property="og:image:width" content="1200" />
 					<meta property="og:image:height" content="630" />
+
+					<link rel="preconnect" href="https://analytics.mokhtar.dev" />
 				</Head>
 				<body className="jjk-app-layout text-white">
 				<Main />
