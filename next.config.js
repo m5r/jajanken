@@ -36,7 +36,7 @@ module.exports = withOffline(withCSS(withPreact({
 	webpack(config) {
 		if (process.env.BUNDLE_ANALYZER_TOKEN) {
 			config.plugins.push(
-				new BundleAnalyzerPlugin({token: process.env.BUNDLE_ANALYZER_TOKEN}),
+				new BundleAnalyzerPlugin({ token: process.env.BUNDLE_ANALYZER_TOKEN }),
 			);
 		}
 
@@ -44,7 +44,7 @@ module.exports = withOffline(withCSS(withPreact({
 			test: /\.b64$/i,
 			use: [
 				{
-					loader: 'raw-loader',
+					loader: "raw-loader",
 					options: {
 						esModule: false,
 					},
