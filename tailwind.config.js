@@ -2,7 +2,7 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				pixel: ["Munro Small"],
+				pixel: ["'Munro Small'", "monospace"],
 			},
 		},
 	},
