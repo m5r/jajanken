@@ -24,8 +24,16 @@ SW thanks to next-offline, all assets are cached
 
 ### Optimizations
 
-Inline base64 images
+Inline small images ({rock,paper,scissors}.png) with base64
 
-```sh
-cat bg.png | base64 | tr -d '\n' > bg.png.b64
+```shell script
+cat rock.png | base64 | tr -d '\n' > rock.png.b64
+```
+
+---
+
+Serve the background as webp instead of png when supported
+
+```shell script
+./bin/cwebp ~/app/jajanken/public/static/images/bg.png -o ~/app/jajanken/public/static/images/bg.webp -q 90 -m 6
 ```
