@@ -30,7 +30,22 @@
     @apply .bg-repeat-x .bg-cover;
 
     background-color: #302045;
+}
+
+html.no-webp .jjk-background {
     background-image: url("/static/images/bg.png"),
+    linear-gradient(
+            to bottom,
+            rgb(61, 60, 73) 0%,
+            rgb(43, 2, 98) 20%,
+            rgb(119, 25, 84) 53%,
+            rgb(48, 32, 69) 91%,
+            rgb(34, 19, 53) 100%
+    );
+}
+
+html.webp .jjk-background {
+    background-image: url("/static/images/bg.webp"),
     linear-gradient(
             to bottom,
             rgb(61, 60, 73) 0%,
@@ -46,9 +61,19 @@
     transition: transform 150ms ease-in-out;
 }
 
-.jjk-player-action:hover {
+html.touchevents .jjk-player-action {
+    transition-duration: 250ms;
+}
+
+html.touchevents .jjk-player-action.jjk-bump {
     transform: translateY(0);
 }
+
+html.no-touchevents .jjk-player-action:hover {
+    transform: translateY(0);
+}
+
+
 /* purgecss end ignore */
 
 @tailwind components;
