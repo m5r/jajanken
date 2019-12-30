@@ -73,6 +73,23 @@ html.no-touchevents .jjk-player-action:hover {
     transform: translateY(0);
 }
 
+.jjk-click-here-to-play {
+    animation: up-and-down infinite 1s;
+}
+
+@keyframes up-and-down {
+    0% {
+        transform: translateY(16px);
+    }
+
+    50% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(16px);
+    }
+}
 
 /* purgecss end ignore */
 

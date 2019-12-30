@@ -133,6 +133,7 @@ const reducer: Reducer<State, Action> = (prevState, action) => {
 
 const Index: NextPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const hasNotPlayedYet = state.lastPlayerMove === null;
 
 	return (
 		<section className="jjk-background h-full w-full flex flex-col justify-between items-center">
@@ -148,14 +149,17 @@ const Index: NextPage = () => {
 				<PlayerAction
 					onClick={() => dispatch("PLAYER_PLAY_ROCK")}
 					move="ROCK"
+					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
 					onClick={() => dispatch("PLAYER_PLAY_PAPER")}
 					move="PAPER"
+					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
 					onClick={() => dispatch("PLAYER_PLAY_SCISSORS")}
 					move="SCISSORS"
+					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 			</footer>
 		</section>
