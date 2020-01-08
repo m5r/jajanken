@@ -10,7 +10,11 @@
 		"dev": "PORT=9029 NODE_ENV=development node server.js",
 		"build": "next build",
 		"next": "next",
-		"start": "NODE_ENV=production node server.js"
+		"start": "NODE_ENV=production node server.js",
+		"cy:open": "cypress open",
+		"cy:run": "cypress run",
+		"cy:verify": "cypress verify",
+		"cy:run:record": "cypress run --record"
 	},
 	"dependencies": {
 		"@bundle-analyzer/webpack-plugin": "0.5.1",
@@ -34,6 +38,7 @@
 		"@types/react": "16.9.17",
 		"autoprefixer": "9.7.3",
 		"cssnano": "4.1.10",
+		"cypress": "3.8.1",
 		"postcss-easy-import": "^3.0.0",
 		"postcss-loader": "3.0.0",
 		"raw-loader": "4.0.0",

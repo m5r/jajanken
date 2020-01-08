@@ -8,10 +8,10 @@ type Props = {
 	};
 };
 
-const Score: FunctionComponent<{ title: string; value: number; }> = ({ title, value }) => (
+const Score: FunctionComponent<{ title: "WINS" | "TIES" | "LOSSES"; value: number; }> = ({ title, value }) => (
 	<div className="flex flex-col items-center w-1/3">
 		<div>{title}</div>
-		<div>{value}</div>
+		<div data-cy={title}>{value}</div>
 	</div>
 );
 

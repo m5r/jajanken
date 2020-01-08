@@ -27,6 +27,7 @@ const PlayerAction: FunctionComponent<Props> = ({ onClick, move, hasNotPlayedYet
 
 	return (
 		<img
+			data-cy={move}
 			className={className}
 			src={`data:image/png;base64,${base64Images[move]}`}
 			onClick={() => {

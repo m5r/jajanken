@@ -2,3 +2,7 @@
 node_modules/*
 .idea/*
 .env
+cypress/fixtures
+cypress/plugins
+cypress/support
+cypress/videos
