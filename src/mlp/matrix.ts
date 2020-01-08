@@ -15,12 +15,12 @@ export default class Matrix {
 		}
 	}
 
-	public multiply(b: Matrix) {
+	public multiply(b: Matrix): Matrix {
 		if (b.rows !== this.cols) {
 			throw new Error("Matrices of different sizes");
 		}
 
-		let result = new Matrix(this.rows, b.cols);
+		const result = new Matrix(this.rows, b.cols);
 
 		for (let i = 0; i < this.rows; i++) {
 			for (let j = 0; j < b.cols; j++) {
@@ -31,10 +31,11 @@ export default class Matrix {
 				result.data[i * result.cols + j] = s;
 			}
 		}
+
 		return result;
 	}
 
-	public transpose() {
+	public transpose(): void {
 		for (let i = 0; i < this.rows; i++) {
 			for (let j = 0; j < this.cols; j++) {
 				let temp = this.data[i * this.cols + j];
@@ -42,30 +43,31 @@ export default class Matrix {
 				this.data[j * this.rows + i] = temp;
 			}
 		}
-		let temp = this.cols;
-		this.cols = this.rows;
-		this.rows = temp;
+
+		[this.cols, this.rows] = [this.rows, this.cols];
 	}
 
-	public add(a: Matrix) {
+	public add(a: Matrix): void {
 		if (this.rows !== a.rows || this.cols !== a.cols) {
 			throw new Error("Matrices of different sizes");
 		}
+
 		for (let i = 0; i < this.data.length; i++) {
 			this.data[i] += a.data[i];
 		}
 	}
 
-	public subtract(a: Matrix) {
+	public subtract(a: Matrix): void {
 		if (this.rows !== a.rows || this.cols !== a.cols) {
 			throw new Error("Matrices of different sizes");
 		}
+
 		for (let i = 0; i < this.data.length; i++) {
 			this.data[i] -= a.data[i];
 		}
 	}
 
-	public scalar(a: number) {
+	public scalar(a: number): void {
 		for (let i = 0; i < this.data.length; i++) {
 			this.data[i] *= a;
 		}
@@ -81,7 +83,7 @@ export default class Matrix {
 		}
 	}
 
-	public forEach(func: (x: number) => number) {
+	public forEach(func: (x: number) => number): void {
 		for (let i = 0; i < this.data.length; i++) {
 			this.data[i] = func(this.data[i]);
 		}

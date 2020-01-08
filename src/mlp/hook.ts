@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
-import MLP from "./mlp";
-import { Move, Result } from "../shared-types";
+// @ts-ignore
+import MLPWorker from "worker-loader?name=static/[hash].worker.js!./mlp.worker";
 
-type MoveAsArray = [1, 0, 0] | [0, 1, 0] | [0, 0, 1];
+import { Move, MoveAsArray, Result } from "../shared-types";
 
 const MOVES: Move[] = ["ROCK", "PAPER", "SCISSORS"];
 
@@ -19,51 +19,77 @@ function translateMoveToArray(move: Move): MoveAsArray {
 	return array as MoveAsArray;
 }
 
-const mlp = new MLP({ input: 3, hidden: 3, output: 3, learningRate: 0.1, iterations: 300 });
-
-type PredictParams = {
+type AddMoveParams = {
 	playerMove: Move;
 	lastPlayerMove: Move | null;
 	lastResult: Result | null;
 }
 
+const mlpWorker = new MLPWorker();
+const mlpProxy = {
+	predict(lastPlayerMoveAsArray: MoveAsArray) {
+		const message = {
+			type: "predict",
+			params: { lastPlayerMoveAsArray },
+		};
+
+		mlpWorker.postMessage(JSON.stringify(message));
+	},
+	train(xMatrix: number[][], yMatrix: number[][]) {
+		const message = {
+			type: "train",
+			params: { xMatrix, yMatrix },
+		};
+
+		mlpWorker.postMessage(JSON.stringify(message));
+	},
+};
+
 export function useMLP() {
-	const mlpRef = useRef<MLP>(mlp);
 	const [moves, setMoves] = useState<MoveAsArray[]>([]);
 	const [xMatrix, setXMatrix] = useState<number[][]>([]);
 	const [yMatrix, setYMatrix] = useState<number[][]>([]);
 
-	return function predict({ playerMove, lastPlayerMove, lastResult }: PredictParams): Move {
-		const playerMoveAsArray = translateMoveToArray(playerMove);
-		const nextMoves = [...moves, playerMoveAsArray];
-		let nextXMatrix = xMatrix;
-		let nextYMatrix = yMatrix;
-		if (nextMoves.length === 2) {
-			nextXMatrix = [...xMatrix, nextMoves.shift()!];
-			nextYMatrix = [...yMatrix, nextMoves[0]];
-		}
+	return {
+		async predict(lastPlayerMove: Move | null): Promise<Move> {
+			if (lastPlayerMove === null || yMatrix.length < 3) {
+				return MOVES[Math.floor(Math.random() * 3)];
+			}
 
-		if (nextYMatrix.length < 3 || lastPlayerMove === null) {
+			return new Promise((resolve) => {
+				const lastPlayerMoveAsArray = translateMoveToArray(lastPlayerMove);
+				mlpProxy.predict(lastPlayerMoveAsArray);
+
+				mlpWorker.addEventListener<"message">("message", (event: MessageEvent) => {
+					const prediction = JSON.parse(event.data);
+					const computer = (prediction.indexOf(Math.max(...prediction)) + 1) % 3;
+					return resolve(MOVES[computer]);
+				});
+			});
+		},
+		async train({ playerMove, lastPlayerMove, lastResult }: AddMoveParams): Promise<void> {
+			const playerMoveAsArray = translateMoveToArray(playerMove);
+			const nextMoves = [...moves, playerMoveAsArray];
+			let nextXMatrix = xMatrix;
+			let nextYMatrix = yMatrix;
+			if (nextMoves.length === 2) {
+				nextXMatrix = [...xMatrix, nextMoves.shift()!];
+				nextYMatrix = [...yMatrix, nextMoves[0]];
+			}
+
+			if (nextYMatrix.length < 3 || lastPlayerMove === null) {
+				setMoves(nextMoves);
+				setXMatrix(nextXMatrix);
+				setYMatrix(nextYMatrix);
+			}
+
+			if (lastResult !== "LOSS") {
+				mlpProxy.train(nextXMatrix, nextYMatrix);
+			}
+
 			setMoves(nextMoves);
 			setXMatrix(nextXMatrix);
 			setYMatrix(nextYMatrix);
-
-			return MOVES[Math.floor(Math.random() * 3)];
-		}
-
-		const lastPlayerMoveAsArray = translateMoveToArray(lastPlayerMove);
-		const prediction = mlpRef.current.predict(lastPlayerMoveAsArray).data;
-		const computer = (prediction.indexOf(Math.max(...prediction)) + 1) % 3;
-
-		if (lastResult !== "LOSS") {
-			mlpRef.current.shuffle(nextXMatrix, nextYMatrix);
-			mlpRef.current.fit(nextXMatrix, nextYMatrix);
-		}
-
-		setMoves(nextMoves);
-		setXMatrix(nextXMatrix);
-		setYMatrix(nextYMatrix);
-
-		return MOVES[computer];
+		},
 	};
 }

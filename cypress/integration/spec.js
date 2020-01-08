@@ -7,7 +7,7 @@ describe("Jajanken", () => {
 
 		for (let i = 0; i < PLAYS; i++) {
 			const moveToPlay = MOVES[Math.floor(Math.random() * 3)];
-			cy.get(`[data-cy='${moveToPlay}']`).click();
+			cy.get(`[data-cy='${moveToPlay}']`).click().wait(100);
 		}
 
 		const RESULTS = ["WINS", "TIES", "LOSSES"];

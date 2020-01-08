@@ -46,6 +46,6 @@ When supported, the background is served as webp instead of png to further save 
 
 ### Next steps
 
-The predictions being computed on the main thread, I would like to leverage [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) to make sure performance stays good.
+~~The predictions being computed on the main thread, I would like to leverage [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) to make sure performance stays good.~~
 
 Being still far from understanding how the multilayer perceptron fully works, one of the next steps would be to dive deeper into it and probably make my own implementation entirely from scratch.
