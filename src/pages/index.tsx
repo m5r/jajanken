@@ -166,10 +166,6 @@ const Index: NextPage = () => {
 			<Scoreboard score={state.score} />
 
 			<MainSection
-				lastPlayerMove={state.lastPlay.playerMove}
-				lastComputerMove={state.lastPlay.computerMove}
-				lastResult={state.lastPlay.result}
-				isPredicting={state.isPredicting}
 				state={state}
 				dispatch={dispatch}
 			/>
