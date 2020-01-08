@@ -90,7 +90,7 @@ function getResult(player: Move, computer: Move): Result {
 	throw new Error("Unreachable code");
 }
 
-const reducer: Reducer<State, Action> = (state: State, action: Action) => {
+const reducer: Reducer<State, Action> = (state, action) => {
 	if (action.computerMove === null) {
 		if (state.isPredicting) {
 			return state;
