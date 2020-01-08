@@ -5,9 +5,10 @@ type Props = {
 	lastPlayerMove: Move | null;
 	lastComputerMove: Move | null;
 	lastResult: Result | null;
+	isPredicting: boolean;
 };
 
-const MainSection: FunctionComponent<Props> = ({ lastPlayerMove, lastComputerMove, lastResult }) => {
+const MainSection: FunctionComponent<Props> = ({ lastPlayerMove, lastComputerMove, lastResult, isPredicting }) => {
 	if (lastPlayerMove === null || lastComputerMove === null || lastResult === null) {
 		return (
 			<main className="w-full flex flex-col text-center font-mono text-2xl">
@@ -15,6 +16,14 @@ const MainSection: FunctionComponent<Props> = ({ lastPlayerMove, lastComputerMov
 				<div className="m-auto">Start playing and see how you do against this AI!</div>
 			</main>
 		);
+	}
+
+	if (isPredicting) {
+		return (
+			<main className="w-full flex flex-col text-center font-mono text-2xl">
+				IS PREDICTING...
+			</main>
+		)
 	}
 
 	let resultText = "";

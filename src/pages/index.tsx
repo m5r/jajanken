@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { useReducer, Reducer } from "react";
+import { useReducer, Reducer, useEffect } from "react";
 
 import Scoreboard from "../components/scoreboard";
 import PlayerAction from "../components/player-action";
@@ -14,12 +14,19 @@ type State = {
 		ties: number;
 		losses: number;
 	};
-	lastPlayerMove: Move | null;
-	lastComputerMove: Move | null;
-	lastResult: Result | null;
+	lastPlay: {
+		playerMove: Move | null;
+		computerMove: Move | null;
+		result: Result | null;
+	};
+	currentMove: Move | null;
+	isPredicting: boolean;
 };
 
-type Action = "PLAYER_PLAY_ROCK" | "PLAYER_PLAY_PAPER" | "PLAYER_PLAY_SCISSORS";
+type Action = {
+	playerMove: Move | null;
+	computerMove: Move | null;
+};
 
 const initialState: State = {
 	score: {
@@ -27,9 +34,13 @@ const initialState: State = {
 		ties: 0,
 		losses: 0,
 	},
-	lastPlayerMove: null,
-	lastComputerMove: null,
-	lastResult: null,
+	lastPlay: {
+		playerMove: null,
+		computerMove: null,
+		result: null,
+	},
+	currentMove: null,
+	isPredicting: false,
 };
 
 function getResult(player: Move, computer: Move): Result {
@@ -78,87 +89,120 @@ function getResult(player: Move, computer: Move): Result {
 	throw new Error("Unreachable code");
 }
 
-const reducer: Reducer<State, Action> = (prevState, action) => {
-	const { lastPlayerMove, lastResult } = prevState;
-	const { predict, train } = useMLP();
-
-	const playerMove: Move = action.slice("PLAYER_PLAY_".length) as Move;
-	train({ lastPlayerMove, lastResult, playerMove });
-	const computerMove = predict({ lastPlayerMove });
-	const result = getResult(playerMove, computerMove);
-	let nextState: State = {
-		...prevState,
-		lastPlayerMove: playerMove,
-		lastComputerMove: computerMove,
-		lastResult: result,
-	};
-
-	switch (result) {
-		case "WIN": {
-			nextState = {
-				...nextState,
-				score: {
-					...nextState.score,
-					wins: nextState.score.wins + 1,
-				},
-			};
-
-			return nextState;
+const reducer: Reducer<State, Action> = (state, action: Action) => {
+	if (action.playerMove !== null) {
+		return {
+			...state,
+			currentMove: action.playerMove,
+			isPredicting: true,
 		}
-		case "LOSS": {
-			nextState = {
-				...nextState,
-				score: {
-					...nextState.score,
-					losses: nextState.score.losses + 1,
-				},
-			};
-
-			return nextState;
-		}
-		case "TIE": {
-			nextState = {
-				...nextState,
-				score: {
-					...nextState.score,
-					ties: nextState.score.ties + 1,
-				},
-			};
-
-			return nextState;
-		}
-		default:
-			throw new Error("Unreachable code");
 	}
+
+	if (action.computerMove !== null) {
+		const playerMove = state.currentMove!;
+		const computerMove = action.computerMove;
+
+		const result = getResult(playerMove, computerMove);
+		let nextState: State = {
+			...state,
+			lastPlay: {
+				playerMove,
+				computerMove,
+				result,
+			},
+			isPredicting: false,
+			currentMove: null,
+		};
+
+		switch (result) {
+			case "WIN": {
+				nextState = {
+					...nextState,
+					score: {
+						...nextState.score,
+						wins: nextState.score.wins + 1,
+					},
+				};
+
+				return nextState;
+			}
+			case "LOSS": {
+				nextState = {
+					...nextState,
+					score: {
+						...nextState.score,
+						losses: nextState.score.losses + 1,
+					},
+				};
+
+				return nextState;
+			}
+			case "TIE": {
+				nextState = {
+					...nextState,
+					score: {
+						...nextState.score,
+						ties: nextState.score.ties + 1,
+					},
+				};
+
+				return nextState;
+			}
+			default:
+				throw new Error("Unreachable code");
+		}
+	}
+
+	throw new Error("Unreachable code");
 };
 
 const Index: NextPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const hasNotPlayedYet = state.lastPlayerMove === null;
+	const { predict, train } = useMLP();
+
+	useEffect(() => {
+		async function ddd() {
+			if (state.isPredicting) {
+				const computerMove = await predict(state.lastPlay.playerMove);
+				console.log("computerMove", computerMove);
+				dispatch({ computerMove, playerMove: null });
+
+				const lastPlayerMove = state.lastPlay.playerMove;
+				const lastResult = state.lastPlay.result;
+				const playerMove = state.currentMove!;
+				train({ lastPlayerMove, lastResult, playerMove });
+			}
+		}
+
+		ddd();
+	}, [state.currentMove]);
+
+	const hasNotPlayedYet = state.lastPlay.playerMove === null;
 
 	return (
 		<section className="jjk-background h-full w-full flex flex-col justify-between items-center">
 			<Scoreboard score={state.score} />
 
 			<MainSection
-				lastPlayerMove={state.lastPlayerMove}
-				lastComputerMove={state.lastComputerMove}
-				lastResult={state.lastResult}
+				lastPlayerMove={state.lastPlay.playerMove}
+				lastComputerMove={state.lastPlay.computerMove}
+				lastResult={state.lastPlay.result}
+				isPredicting={state.isPredicting}
 			/>
 
 			<footer className="h-32 lg:h-48 w-full flex justify-around">
 				<PlayerAction
-					onClick={() => dispatch("PLAYER_PLAY_ROCK")}
+					onClick={() => dispatch({ playerMove: "ROCK", computerMove: null })}
 					move="ROCK"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
-					onClick={() => dispatch("PLAYER_PLAY_PAPER")}
+					onClick={() => dispatch({ playerMove: "PAPER", computerMove: null })}
 					move="PAPER"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
-					onClick={() => dispatch("PLAYER_PLAY_SCISSORS")}
+					onClick={() => dispatch({ playerMove: "SCISSORS", computerMove: null })}
 					move="SCISSORS"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>

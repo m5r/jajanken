@@ -21,10 +21,6 @@ function translateMoveToArray(move: Move): MoveAsArray {
 
 const mlp = new MLP({ input: 3, hidden: 3, output: 3, learningRate: 0.1, iterations: 300 });
 
-type PredictParams = {
-	lastPlayerMove: Move | null;
-}
-
 type AddMoveParams = {
 	playerMove: Move;
 	lastPlayerMove: Move | null;
@@ -38,18 +34,18 @@ export function useMLP() {
 	const [yMatrix, setYMatrix] = useState<number[][]>([]);
 
 	return {
-		predict({ lastPlayerMove }: PredictParams): Move {
-			if (lastPlayerMove === null) {
+		async predict(lastPlayerMove: Move | null): Promise<Move> {
+			if (lastPlayerMove === null || yMatrix.length < 3) {
 				return MOVES[Math.floor(Math.random() * 3)];
 			}
 
 			const lastPlayerMoveAsArray = translateMoveToArray(lastPlayerMove);
-			const prediction = (mlpRef.current.predict(lastPlayerMoveAsArray)).data;
+			const { data: prediction } = await mlpRef.current.predict(lastPlayerMoveAsArray); // TODO: workerize
 			const computer = (prediction.indexOf(Math.max(...prediction)) + 1) % 3;
 
 			return MOVES[computer];
 		},
-		train({ playerMove, lastPlayerMove, lastResult }: AddMoveParams): void {
+		async train({ playerMove, lastPlayerMove, lastResult }: AddMoveParams): Promise<void> {
 			const playerMoveAsArray = translateMoveToArray(playerMove);
 			const nextMoves = [...moves, playerMoveAsArray];
 			let nextXMatrix = xMatrix;
