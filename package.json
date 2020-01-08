@@ -10,7 +10,7 @@
 		"build": "next build",
 		"next": "next",
 		"start": "NODE_ENV=production node server.js",
-    	"test": "start-server-and-test dev http://localhost:9029 cy:run",
+    	"test": "start-server-and-test dev http://localhost:9029 cy:run:record",
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
 		"cy:verify": "cypress verify",
