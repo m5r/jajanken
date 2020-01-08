@@ -161,10 +161,9 @@ const Index: NextPage = () => {
 	const { predict, train } = useMLP();
 
 	useEffect(() => {
-		async function ddd() {
+		async function predictAndTrain() {
 			if (state.isPredicting) {
 				const computerMove = await predict(state.lastPlay.playerMove);
-				console.log("computerMove", computerMove);
 				dispatch({ computerMove, playerMove: null });
 
 				const lastPlayerMove = state.lastPlay.playerMove;
@@ -174,7 +173,7 @@ const Index: NextPage = () => {
 			}
 		}
 
-		ddd();
+		predictAndTrain();
 	}, [state.currentMove]);
 
 	const hasNotPlayedYet = state.lastPlay.playerMove === null;
