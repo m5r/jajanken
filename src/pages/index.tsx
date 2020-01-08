@@ -4,6 +4,7 @@ import { useReducer, Reducer } from "react";
 
 import Scoreboard from "../components/scoreboard";
 import PlayerAction from "../components/player-action";
+
 const MainSection = dynamic(() => import("../components/main-section"), { ssr: false });
 
 import { Move, Result } from "../shared-types";
@@ -23,18 +24,10 @@ export type State = {
 	isPredicting: boolean;
 };
 
-type PlayerAction = { playerMove: Move };
-type ComputerAction = { computerMove: Move };
-
-function isPlayerAction(action: Action): action is PlayerAction {
-	return action.hasOwnProperty("playerMove");
-}
-
-function isComputerAction(action: Action): action is ComputerAction {
-	return action.hasOwnProperty("computerMove");
-}
-
-export type Action = PlayerAction | ComputerAction;
+export type Action = {
+	playerMove: Move;
+	computerMove: Move | null;
+};
 
 const initialState: State = {
 	score: {
@@ -98,7 +91,7 @@ function getResult(player: Move, computer: Move): Result {
 }
 
 const reducer: Reducer<State, Action> = (state: State, action: Action) => {
-	if (isPlayerAction(action)) {
+	if (action.computerMove === null) {
 		if (state.isPredicting) {
 			return state;
 		}
@@ -107,65 +100,60 @@ const reducer: Reducer<State, Action> = (state: State, action: Action) => {
 			...state,
 			currentMove: action.playerMove,
 			isPredicting: true,
-		}
-	}
-
-	if (isComputerAction(action)) {
-		const playerMove = state.currentMove!;
-		const computerMove = action.computerMove;
-
-		const result = getResult(playerMove, computerMove);
-		let nextState: State = {
-			...state,
-			lastPlay: {
-				playerMove,
-				computerMove,
-				result,
-			},
-			isPredicting: false,
-			currentMove: null,
 		};
-
-		switch (result) {
-			case "WIN": {
-				nextState = {
-					...nextState,
-					score: {
-						...nextState.score,
-						wins: nextState.score.wins + 1,
-					},
-				};
-
-				return nextState;
-			}
-			case "LOSS": {
-				nextState = {
-					...nextState,
-					score: {
-						...nextState.score,
-						losses: nextState.score.losses + 1,
-					},
-				};
-
-				return nextState;
-			}
-			case "TIE": {
-				nextState = {
-					...nextState,
-					score: {
-						...nextState.score,
-						ties: nextState.score.ties + 1,
-					},
-				};
-
-				return nextState;
-			}
-			default:
-				throw new Error("Unreachable code");
-		}
 	}
 
-	throw new Error("Unreachable code");
+	const { playerMove, computerMove } = action;
+
+	const result = getResult(playerMove, computerMove);
+	let nextState: State = {
+		...state,
+		lastPlay: {
+			playerMove,
+			computerMove,
+			result,
+		},
+		isPredicting: false,
+		currentMove: null,
+	};
+
+	switch (result) {
+		case "WIN": {
+			nextState = {
+				...nextState,
+				score: {
+					...nextState.score,
+					wins: nextState.score.wins + 1,
+				},
+			};
+
+			return nextState;
+		}
+		case "LOSS": {
+			nextState = {
+				...nextState,
+				score: {
+					...nextState.score,
+					losses: nextState.score.losses + 1,
+				},
+			};
+
+			return nextState;
+		}
+		case "TIE": {
+			nextState = {
+				...nextState,
+				score: {
+					...nextState.score,
+					ties: nextState.score.ties + 1,
+				},
+			};
+
+			return nextState;
+		}
+		default:
+			throw new Error("Unreachable code");
+	}
 };
 
 const Index: NextPage = () => {
@@ -188,17 +176,17 @@ const Index: NextPage = () => {
 
 			<footer className="h-32 lg:h-48 w-full flex justify-around">
 				<PlayerAction
-					onClick={() => dispatch({ playerMove: "ROCK" })}
+					onClick={() => dispatch({ playerMove: "ROCK", computerMove: null })}
 					move="ROCK"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
-					onClick={() => dispatch({ playerMove: "PAPER" })}
+					onClick={() => dispatch({ playerMove: "PAPER", computerMove: null })}
 					move="PAPER"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
-					onClick={() => dispatch({ playerMove: "SCISSORS" })}
+					onClick={() => dispatch({ playerMove: "SCISSORS", computerMove: null })}
 					move="SCISSORS"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>
