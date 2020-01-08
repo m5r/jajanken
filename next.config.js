@@ -59,7 +59,4 @@ module.exports = withWorkers(withOffline(withCSS(withPreact({
 	workboxOpts: {
 		swDest: "static/service-worker.js",
 	},
-	workerLoaderOptions: {
-		inline: true,
-	},
 }))));
