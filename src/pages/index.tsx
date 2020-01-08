@@ -1,14 +1,14 @@
 import { NextPage } from "next";
-import { useReducer, Reducer, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { useReducer, Reducer } from "react";
 
 import Scoreboard from "../components/scoreboard";
 import PlayerAction from "../components/player-action";
-import MainSection from "../components/main-section";
+const MainSection = dynamic(() => import("../components/main-section"), { ssr: false });
 
 import { Move, Result } from "../shared-types";
-import { useMLP } from "../mlp/hook";
 
-type State = {
+export type State = {
 	score: {
 		wins: number;
 		ties: number;
@@ -23,7 +23,7 @@ type State = {
 	isPredicting: boolean;
 };
 
-type Action = {
+export type Action = {
 	playerMove: Move | null;
 	computerMove: Move | null;
 };
@@ -91,6 +91,10 @@ function getResult(player: Move, computer: Move): Result {
 
 const reducer: Reducer<State, Action> = (state, action: Action) => {
 	if (action.playerMove !== null) {
+		if (state.isPredicting) {
+			return state;
+		}
+
 		return {
 			...state,
 			currentMove: action.playerMove,
@@ -158,23 +162,6 @@ const reducer: Reducer<State, Action> = (state, action: Action) => {
 
 const Index: NextPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const { predict, train } = useMLP();
-
-	useEffect(() => {
-		async function predictAndTrain() {
-			if (state.isPredicting) {
-				const computerMove = await predict(state.lastPlay.playerMove);
-				dispatch({ computerMove, playerMove: null });
-
-				const lastPlayerMove = state.lastPlay.playerMove;
-				const lastResult = state.lastPlay.result;
-				const playerMove = state.currentMove!;
-				train({ lastPlayerMove, lastResult, playerMove });
-			}
-		}
-
-		predictAndTrain();
-	}, [state.currentMove]);
 
 	const hasNotPlayedYet = state.lastPlay.playerMove === null;
 
@@ -187,6 +174,8 @@ const Index: NextPage = () => {
 				lastComputerMove={state.lastPlay.computerMove}
 				lastResult={state.lastPlay.result}
 				isPredicting={state.isPredicting}
+				state={state}
+				dispatch={dispatch}
 			/>
 
 			<footer className="h-32 lg:h-48 w-full flex justify-around">

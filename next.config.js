@@ -1,5 +1,6 @@
 const withOffline = require("next-offline");
 const withCSS = require("@zeit/next-css");
+const withWorkers = require('@zeit/next-workers');
 const BundleAnalyzerPlugin = require("@bundle-analyzer/webpack-plugin");
 require("dotenv").config();
 
@@ -32,7 +33,7 @@ function withPreact(nextConfig = {}) {
 	});
 }
 
-module.exports = withOffline(withCSS(withPreact({
+module.exports = withWorkers(withOffline(withCSS(withPreact({
 	webpack(config) {
 		if (process.env.BUNDLE_ANALYZER_TOKEN) {
 			config.plugins.push(
@@ -58,4 +59,7 @@ module.exports = withOffline(withCSS(withPreact({
 	workboxOpts: {
 		swDest: "static/service-worker.js",
 	},
-})));
+	workerLoaderOptions: {
+		inline: true,
+	},
+}))));

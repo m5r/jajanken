@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
-import MLP from "./mlp";
+// @ts-ignore
+import MLPWorker from "worker-loader?name=static/[hash].worker.js!./mlp.worker";
+
 import { Move, Result } from "../shared-types";
 
-type MoveAsArray = [1, 0, 0] | [0, 1, 0] | [0, 0, 1];
+export type MoveAsArray = [1, 0, 0] | [0, 1, 0] | [0, 0, 1];
 
 const MOVES: Move[] = ["ROCK", "PAPER", "SCISSORS"];
 
@@ -19,16 +21,33 @@ function translateMoveToArray(move: Move): MoveAsArray {
 	return array as MoveAsArray;
 }
 
-const mlp = new MLP({ input: 3, hidden: 3, output: 3, learningRate: 0.1, iterations: 300 });
-
 type AddMoveParams = {
 	playerMove: Move;
 	lastPlayerMove: Move | null;
 	lastResult: Result | null;
 }
 
+const mlpWorker = new MLPWorker();
+const mlpProxy = {
+	predict(lastPlayerMoveAsArray: MoveAsArray) {
+		const message = {
+			type: "predict",
+			params: { lastPlayerMoveAsArray },
+		};
+
+		mlpWorker.postMessage(JSON.stringify(message));
+	},
+	train(xMatrix: number[][], yMatrix: number[][]) {
+		const message = {
+			type: "train",
+			params: { xMatrix, yMatrix },
+		};
+
+		mlpWorker.postMessage(JSON.stringify(message));
+	},
+};
+
 export function useMLP() {
-	const mlpRef = useRef<MLP>(mlp);
 	const [moves, setMoves] = useState<MoveAsArray[]>([]);
 	const [xMatrix, setXMatrix] = useState<number[][]>([]);
 	const [yMatrix, setYMatrix] = useState<number[][]>([]);
@@ -39,11 +58,16 @@ export function useMLP() {
 				return MOVES[Math.floor(Math.random() * 3)];
 			}
 
-			const lastPlayerMoveAsArray = translateMoveToArray(lastPlayerMove);
-			const { data: prediction } = await mlpRef.current.predict(lastPlayerMoveAsArray); // TODO: workerize
-			const computer = (prediction.indexOf(Math.max(...prediction)) + 1) % 3;
+			return new Promise((resolve) => {
+				const lastPlayerMoveAsArray = translateMoveToArray(lastPlayerMove);
+				mlpProxy.predict(lastPlayerMoveAsArray);
 
-			return MOVES[computer];
+				mlpWorker.addEventListener<"message">("message", (event: MessageEvent) => {
+					const prediction = JSON.parse(event.data);
+					const computer = (prediction.indexOf(Math.max(...prediction)) + 1) % 3;
+					return resolve(MOVES[computer]);
+				});
+			});
 		},
 		async train({ playerMove, lastPlayerMove, lastResult }: AddMoveParams): Promise<void> {
 			const playerMoveAsArray = translateMoveToArray(playerMove);
@@ -62,13 +86,12 @@ export function useMLP() {
 			}
 
 			if (lastResult !== "LOSS") {
-				mlpRef.current.shuffle(nextXMatrix, nextYMatrix);
-				mlpRef.current.fit(nextXMatrix, nextYMatrix);
+				mlpProxy.train(nextXMatrix, nextYMatrix);
 			}
 
 			setMoves(nextMoves);
 			setXMatrix(nextXMatrix);
 			setYMatrix(nextYMatrix);
-		}
+		},
 	};
 }
