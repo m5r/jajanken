@@ -1,6 +1,6 @@
 import MLP from "./mlp";
 
-type MoveAsArray = [1, 0, 0] | [0, 1, 0] | [0, 0, 1];
+import { MoveAsArray } from "../shared-types";
 
 const mlp = new MLP({ input: 3, hidden: 3, output: 3, learningRate: 0.1, iterations: 300 });
 
@@ -17,10 +17,37 @@ type Message = {
 	};
 }
 
+function isMessage(data: any): data is Message {
+	if (!data.hasOwnProperty("type") || !data.hasOwnProperty("params")) {
+		return false;
+	}
+
+	if (["predict", "train"].indexOf(data.type) === -1) {
+		return false;
+	}
+
+	if (data.type === "predict") {
+		if (!data.params.hasOwnProperty("lastPlayerMoveAsArray")) {
+			return false;
+		}
+	}
+
+	if (data.type === "train") {
+		if (!data.params.hasOwnProperty("xMatrix") || !data.params.hasOwnProperty("yMatrix")) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 const ctx: Worker = self as any;
 
 ctx.addEventListener<"message">("message", (event) => {
 	const message: Message = JSON.parse(event.data);
+	if (!isMessage(message)) {
+		throw new Error("Malformed message");
+	}
 
 	switch (message.type) {
 		case "predict":

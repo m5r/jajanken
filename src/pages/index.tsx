@@ -23,10 +23,18 @@ export type State = {
 	isPredicting: boolean;
 };
 
-export type Action = {
-	playerMove: Move | null;
-	computerMove: Move | null;
-};
+type PlayerAction = { playerMove: Move };
+type ComputerAction = { computerMove: Move };
+
+function isPlayerAction(action: Action): action is PlayerAction {
+	return action.hasOwnProperty("playerMove");
+}
+
+function isComputerAction(action: Action): action is ComputerAction {
+	return action.hasOwnProperty("computerMove");
+}
+
+export type Action = PlayerAction | ComputerAction;
 
 const initialState: State = {
 	score: {
@@ -89,8 +97,8 @@ function getResult(player: Move, computer: Move): Result {
 	throw new Error("Unreachable code");
 }
 
-const reducer: Reducer<State, Action> = (state, action: Action) => {
-	if (action.playerMove !== null) {
+const reducer: Reducer<State, Action> = (state: State, action: Action) => {
+	if (isPlayerAction(action)) {
 		if (state.isPredicting) {
 			return state;
 		}
@@ -102,7 +110,7 @@ const reducer: Reducer<State, Action> = (state, action: Action) => {
 		}
 	}
 
-	if (action.computerMove !== null) {
+	if (isComputerAction(action)) {
 		const playerMove = state.currentMove!;
 		const computerMove = action.computerMove;
 
@@ -180,17 +188,17 @@ const Index: NextPage = () => {
 
 			<footer className="h-32 lg:h-48 w-full flex justify-around">
 				<PlayerAction
-					onClick={() => dispatch({ playerMove: "ROCK", computerMove: null })}
+					onClick={() => dispatch({ playerMove: "ROCK" })}
 					move="ROCK"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
-					onClick={() => dispatch({ playerMove: "PAPER", computerMove: null })}
+					onClick={() => dispatch({ playerMove: "PAPER" })}
 					move="PAPER"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>
 				<PlayerAction
-					onClick={() => dispatch({ playerMove: "SCISSORS", computerMove: null })}
+					onClick={() => dispatch({ playerMove: "SCISSORS" })}
 					move="SCISSORS"
 					hasNotPlayedYet={hasNotPlayedYet}
 				/>

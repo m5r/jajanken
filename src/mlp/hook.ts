@@ -3,9 +3,7 @@ import { useState } from "react";
 // @ts-ignore
 import MLPWorker from "worker-loader?name=static/[hash].worker.js!./mlp.worker";
 
-import { Move, Result } from "../shared-types";
-
-export type MoveAsArray = [1, 0, 0] | [0, 1, 0] | [0, 0, 1];
+import { Move, MoveAsArray, Result } from "../shared-types";
 
 const MOVES: Move[] = ["ROCK", "PAPER", "SCISSORS"];
 

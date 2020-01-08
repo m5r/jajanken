@@ -20,7 +20,7 @@ const MainSection: FunctionComponent<Props> = ({ lastPlayerMove, lastComputerMov
 		async function predictAndTrain() {
 			if (state.isPredicting) {
 				const computerMove = await predict(state.lastPlay.playerMove);
-				dispatch({ computerMove, playerMove: null });
+				dispatch({ computerMove });
 
 				const lastPlayerMove = state.lastPlay.playerMove;
 				const lastResult = state.lastPlay.result;
