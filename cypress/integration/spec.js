@@ -10,6 +10,8 @@ describe("Jajanken", () => {
 			cy.get(`[data-cy='${moveToPlay}']`).click();
 		}
 
+		cy.wait(500);
+
 		const RESULTS = ["WINS", "TIES", "LOSSES"];
 		let actualPlays = 0;
 		RESULTS.forEach((result, index) => {
