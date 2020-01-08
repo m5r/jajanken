@@ -22,6 +22,7 @@ cache:
     - npm run cy:verify
 
 script:
+  - npm run build
   - npm run test
   # after all tests finish running we need
   # to kill all background jobs (like "npm start &")
