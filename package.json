@@ -49,8 +49,5 @@
 		"start-server-and-test": "1.10.6",
 		"tailwindcss": "1.1.4",
 		"typescript": "3.7.4"
-	},
-	"resolutions": {
-		"lodash": "latest"
 	}
 }
