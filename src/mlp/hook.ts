@@ -60,11 +60,16 @@ export function useMLP() {
 				const lastPlayerMoveAsArray = translateMoveToArray(lastPlayerMove);
 				mlpProxy.predict(lastPlayerMoveAsArray);
 
-				mlpWorker.addEventListener<"message">("message", (event: MessageEvent) => {
+				function onMessage(event: MessageEvent) {
 					const prediction = JSON.parse(event.data);
 					const computer = (prediction.indexOf(Math.max(...prediction)) + 1) % 3;
-					return resolve(MOVES[computer]);
-				});
+
+					resolve(MOVES[computer]);
+
+					mlpWorker.removeEventListener("message", onMessage);
+				}
+
+				mlpWorker.addEventListener("message", onMessage);
 			});
 		},
 		async train({ playerMove, lastPlayerMove, lastResult }: AddMoveParams): Promise<void> {
