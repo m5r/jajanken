@@ -135,8 +135,9 @@ webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 				/>
 				{
 					isProduction && (
-						<script dangerouslySetInnerHTML={{
-							__html: `(function(f, a, t, h, o, m){
+						<>
+							<script dangerouslySetInnerHTML={{
+								__html: `(function(f, a, t, h, o, m){
 									a[h]=a[h]||function(){
 										(a[h].q=a[h].q||[]).push(arguments)
 									};
@@ -147,7 +148,10 @@ webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 								})(document, window, '//analytics.mokhtar.dev/tracker.js', 'fathom');
 								fathom('set', 'siteId', 'VSFVE');
 								fathom('trackPageview');`,
-						}} />
+							}} />
+							<script async defer src="https://cdn.simpleanalytics.io/hello.js" />
+							<noscript><img src="https://api.simpleanalytics.io/hello.gif" alt="" /></noscript>
+						</>
 					)
 				}
 				</body>
