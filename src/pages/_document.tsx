@@ -149,8 +149,8 @@ webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 								fathom('set', 'siteId', 'VSFVE');
 								fathom('trackPageview');`,
 							}} />
-							<script async defer src="https://cdn.simpleanalytics.io/hello.js" />
-							<noscript><img src="https://api.simpleanalytics.io/hello.gif" alt="" /></noscript>
+							<script async defer src="https://sa.jajanken.app/app.js" />
+							<noscript><img src="https://sa.jajanken.app/image.gif" alt="" /></noscript>
 						</>
 					)
 				}
