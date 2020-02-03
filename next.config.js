@@ -1,44 +1,35 @@
 const withOffline = require("next-offline");
-const withCSS = require("@zeit/next-css");
 const withWorkers = require('@zeit/next-workers');
 const BundleAnalyzerPlugin = require("@bundle-analyzer/webpack-plugin");
 require("dotenv").config();
 
-function withPreact(nextConfig = {}) {
-	return Object.assign({}, nextConfig, {
-		webpack(config, options) {
-			if (!options.defaultLoaders) {
-				throw new Error(
-					"This plugin is not compatible with Next.js versions below 5.0.0 https://err.sh/next-plugins/upgrade",
-				);
-			}
-
-			if (options.isServer) {
-				config.externals = ["react", "react-dom", ...config.externals];
-			}
-
-			config.resolve.alias = Object.assign({}, config.resolve.alias, {
-				react: "preact/compat",
-				react$: "preact/compat",
-				"react-dom": "preact/compat",
-				"react-dom$": "preact/compat",
-			});
-
-			if (typeof nextConfig.webpack === "function") {
-				return nextConfig.webpack(config, options);
-			}
-
-			return config;
-		},
-	});
-}
-
-module.exports = withWorkers(withOffline(withCSS(withPreact({
+module.exports = withWorkers(withOffline({
+	experimental: {
+		modern: true,
+	},
 	webpack(config) {
 		if (process.env.BUNDLE_ANALYZER_TOKEN) {
 			config.plugins.push(
 				new BundleAnalyzerPlugin({ token: process.env.BUNDLE_ANALYZER_TOKEN }),
 			);
+		}
+
+		const splitChunks = config.optimization && config.optimization.splitChunks;
+		if (splitChunks) {
+			const cacheGroups = splitChunks.cacheGroups;
+			const preactModules = /[\\/]node_modules[\\/](preact|preact-render-to-string|preact-context-provider)[\\/]/;
+			if (cacheGroups.framework) {
+				cacheGroups.preact = Object.assign({}, cacheGroups.framework, {
+					test: preactModules,
+				});
+				cacheGroups.commons.name = "framework";
+			} else {
+				cacheGroups.preact = {
+					name: "commons",
+					chunks: "all",
+					test: preactModules,
+				};
+			}
 		}
 
 		config.module.rules.push({
@@ -59,4 +50,4 @@ module.exports = withWorkers(withOffline(withCSS(withPreact({
 	workboxOpts: {
 		swDest: "static/service-worker.js",
 	},
-}))));
+}));
