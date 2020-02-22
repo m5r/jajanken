@@ -1,8 +1,8 @@
 # Jajanken
 
-[Live demo](https://www.jajanken.app/)
+[![Lighthouse score: 99/100](https://lighthouse-badge.appspot.com/?score=99)](https://www.webpagetest.org/result/200222_4X_c68687bb7faaf03e173ef0c60105526c/)
 
-Disclaimer: this project is heavily inspired by [victorqribeiro/jokenpo](https://github.com/victorqribeiro/jokenpo/)
+[Live demo](https://www.jajanken.app/)
 
 ## Goal
 
@@ -44,8 +44,12 @@ When supported, the background is served as webp instead of png to further save 
 ~/Downloads/libwebp-1.0.3-linux-x86-64/bin/cwebp ./public/static/images/bg.png -o ./public/static/images/bg.webp -q 90 -m 6
 ```
 
-### Next steps
+## Next steps
 
 ~~The predictions being computed on the main thread, I would like to leverage [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) to make sure performance stays good.~~
 
 Being still far from understanding how the multilayer perceptron fully works, one of the next steps would be to dive deeper into it and probably make my own implementation entirely from scratch.
+
+## Credits
+
+This project is heavily inspired by [victorqribeiro/jokenpo](https://github.com/victorqribeiro/jokenpo/)
