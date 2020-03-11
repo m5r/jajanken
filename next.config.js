@@ -6,7 +6,6 @@ require("dotenv").config();
 module.exports = withWorkers(withOffline({
 	experimental: {
 		modern: true,
-		polyfillsOptimization: true,
 	},
 	webpack(config) {
 		if (process.env.BUNDLE_ANALYZER_TOKEN) {
