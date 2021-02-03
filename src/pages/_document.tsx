@@ -122,7 +122,7 @@ webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 					<meta property="og:image:width" content="1200" />
 					<meta property="og:image:height" content="630" />
 
-					<link rel="preconnect" crossOrigin="anonymous" href="https://analytics.mokhtar.dev" />
+					<link rel="preload" as="script" crossOrigin="anonymous" href="https://cdn.splitbee.io/sb.js" />
 				</Head>
 				<body className="jjk-app-layout text-white">
 				<Main />
@@ -135,23 +135,7 @@ webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 				/>
 				{
 					isProduction && (
-						<>
-							<script dangerouslySetInnerHTML={{
-								__html: `(function(f, a, t, h, o, m){
-									a[h]=a[h]||function(){
-										(a[h].q=a[h].q||[]).push(arguments)
-									};
-									o=f.createElement('script'),
-									m=f.getElementsByTagName('script')[0];
-									o.async=1; o.src=t; o.id='fathom-script';
-									m.parentNode.insertBefore(o,m)
-								})(document, window, '//analytics.mokhtar.dev/tracker.js', 'fathom');
-								fathom('set', 'siteId', 'VSFVE');
-								fathom('trackPageview');`,
-							}} />
-							<script async defer src="https://sa.jajanken.app/app.js" />
-							<noscript><img src="https://sa.jajanken.app/image.gif" alt="" /></noscript>
-						</>
+						<script async src="https://cdn.splitbee.io/sb.js" />
 					)
 				}
 				</body>
