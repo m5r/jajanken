@@ -1,23 +1,38 @@
-import App from "next/app";
+import { useEffect } from "react";
+import type { AppProps } from "next/app";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import * as Fathom from "fathom-client";
 
 import { pageTitle } from "./_document";
 
 import "../tailwind.css";
 
-class NextApp extends App {
-	public render() {
-		const { Component, pageProps } = this.props;
+export default function App({ Component, pageProps }: AppProps) {
+	const router = useRouter();
 
-		return (
-			<>
-				<Head>
-					<title>{pageTitle}</title>
-				</Head>
-				<Component {...pageProps} />
-			</>
-		);
-	}
-}
+	useEffect(() => {
+		Fathom.load("BKQESIFT", {
+			url: "https://laugh-piano.jajanken.app/script.js",
+			includedDomains: ["www.jajanken.app"],
+		});
 
-export default NextApp;
+		function onRouteChangeComplete() {
+			Fathom.trackPageview();
+		}
+		router.events.on("routeChangeComplete", onRouteChangeComplete);
+
+		return () => {
+			router.events.off("routeChangeComplete", onRouteChangeComplete);
+		};
+	}, []);
+
+	return (
+		<>
+			<Head>
+				<title>{pageTitle}</title>
+			</Head>
+			<Component {...pageProps} />
+		</>
+	);
+};
